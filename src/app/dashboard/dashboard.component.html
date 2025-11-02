@@ -1,0 +1,64 @@
+<div class="dashboard-container">
+  <h1>Dashboard</h1>
+  <p>Welcome to the Student Frequency Calculator!</p>
+
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-card-title>Total Students</mat-card-title>
+        <mat-icon mat-card-avatar>school</mat-icon>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-number">0</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-card-title>Today's Attendance</mat-card-title>
+        <mat-icon mat-card-avatar>event_available</mat-icon>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-number">0%</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-card-title>Classes Today</mat-card-title>
+        <mat-icon mat-card-avatar>class</mat-icon>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-number">0</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-card-title>Average Frequency</mat-card-title>
+        <mat-icon mat-card-avatar>assessment</mat-icon>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-number">0%</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" routerLink="/students">
+        <mat-icon>add</mat-icon>
+        Add Students
+      </button>
+      <button mat-raised-button color="accent" routerLink="/attendance">
+        <mat-icon>event_note</mat-icon>
+        Take Attendance
+      </button>
+      <button mat-raised-button routerLink="/reports">
+        <mat-icon>bar_chart</mat-icon>
+        View Reports
+      </button>
+    </div>
+  </div>
+</div>
