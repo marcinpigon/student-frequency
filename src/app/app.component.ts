@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
     { icon: 'dashboard', label: 'Panel główny', route: '/dashboard' },
     { icon: 'school', label: 'Uczniowie', route: '/students' },
     { icon: 'event_available', label: 'Frekwencja', route: '/attendance' },
+    { icon: 'bar_chart', label: 'Raport Częstotliwości', route: '/frequency' },
     { icon: 'assessment', label: 'Raporty', route: '/reports' },
     { icon: 'settings', label: 'Ustawienia', route: '/settings' },
   ];

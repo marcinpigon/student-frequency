@@ -1,6 +1,66 @@
-# StudentFrequency
+# Student Frequency Calculator
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
+A comprehensive Angular application for tracking and analyzing student attendance. This project helps teachers efficiently manage student attendance records and generate detailed frequency reports.
+
+## Features
+
+### 📊 Frequency Report (NEW!)
+
+- Generate attendance frequency reports by semester or full academic year
+- Calculate total hours present/absent for each student
+- View class-wide averages and individual student statistics
+- Export reports to CSV format
+- Visual indicators for attendance thresholds
+- See [FREQUENCY_FEATURE.md](./FREQUENCY_FEATURE.md) for detailed documentation
+
+### 👨‍🎓 Student Management
+
+- Add, edit, and delete students
+- Organize students by class
+- Track student enrollment dates and status
+
+### 📚 Class Management
+
+- Create and manage multiple classes
+- Track academic year and semester information
+- Assign students to classes
+
+### 📈 Dashboard
+
+- Overview of total students and classes
+- Quick access to key metrics
+- Sample data generation for testing
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm (comes with Node.js)
+- Angular CLI (`npm install -g @angular/cli`)
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd student-frequency
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Start the development server
+
+```bash
+ng serve
+```
+
+4. Navigate to `http://localhost:4200/` in your browser
 
 ## Development server
 

@@ -1,0 +1,194 @@
+<div class="frequency-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>assessment</mat-icon>
+        Frequency Report
+      </mat-card-title>
+      <mat-card-subtitle>
+        Generate attendance frequency reports for semester or year
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="reportForm" class="report-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Select Class</mat-label>
+          <mat-select
+            formControlName="classId"
+            (selectionChange)="onClassChange($event.value)"
+          >
+            <mat-option *ngFor="let class of classes" [value]="class.id">
+              {{ class.name }} - {{ class.academicYear }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-radio-group formControlName="period" class="period-radio">
+          <mat-label>Report Period:</mat-label>
+          <mat-radio-button value="semester">Semester</mat-radio-button>
+          <mat-radio-button value="year">Year</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field
+          appearance="outline"
+          *ngIf="reportForm.get('period')?.value === 'semester'"
+        >
+          <mat-label>Semester</mat-label>
+          <mat-select formControlName="semester">
+            <mat-option value="Fall">Fall</mat-option>
+            <mat-option value="Spring">Spring</mat-option>
+            <mat-option value="Summer">Summer</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="button-group">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="generateReport()"
+            [disabled]="reportForm.invalid"
+          >
+            <mat-icon>bar_chart</mat-icon>
+            Generate Report
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="addSampleAttendance()"
+            [disabled]="!selectedClass"
+          >
+            <mat-icon>add_circle</mat-icon>
+            Add Sample Data
+          </button>
+
+          <button mat-raised-button (click)="clearReport()">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="frequencyReport" class="report-card">
+    <mat-card-header>
+      <mat-card-title>
+        Report for {{ frequencyReport.className }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{
+          frequencyReport.period === "semester"
+            ? "Semester: " + frequencyReport.semester
+            : "Full Year"
+        }}
+        - Academic Year:
+        {{ frequencyReport.academicYear }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="summary-info">
+        <div class="summary-item">
+          <strong>Total Class Hours:</strong>
+          {{ frequencyReport.totalClassHours.toFixed(2) }}
+        </div>
+        <div class="summary-item">
+          <strong>Class Average Presence:</strong>
+          {{ frequencyReport.classAveragePresence.toFixed(2) }}%
+        </div>
+        <div class="summary-item">
+          <strong>Class Average Absence:</strong>
+          {{ frequencyReport.classAverageAbsence.toFixed(2) }}%
+        </div>
+        <div class="summary-item">
+          <strong>Total Students:</strong>
+          {{ frequencyReport.studentReports.length }}
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table
+          mat-table
+          [dataSource]="frequencyReport.studentReports"
+          class="report-table"
+        >
+          <!-- Student Name Column -->
+          <ng-container matColumnDef="studentName">
+            <th mat-header-cell *matHeaderCellDef>Student Name</th>
+            <td mat-cell *matCellDef="let report">{{ report.studentName }}</td>
+          </ng-container>
+
+          <!-- Total Hours Present Column -->
+          <ng-container matColumnDef="totalHoursPresent">
+            <th mat-header-cell *matHeaderCellDef>Hours Present</th>
+            <td mat-cell *matCellDef="let report">
+              {{ report.totalHoursPresent.toFixed(2) }}
+            </td>
+          </ng-container>
+
+          <!-- Total Hours Absent Column -->
+          <ng-container matColumnDef="totalHoursAbsent">
+            <th mat-header-cell *matHeaderCellDef>Hours Absent</th>
+            <td mat-cell *matCellDef="let report">
+              {{ report.totalHoursAbsent.toFixed(2) }}
+            </td>
+          </ng-container>
+
+          <!-- Total Hours Column -->
+          <ng-container matColumnDef="totalHours">
+            <th mat-header-cell *matHeaderCellDef>Total Hours</th>
+            <td mat-cell *matCellDef="let report">
+              {{ report.totalHours.toFixed(2) }}
+            </td>
+          </ng-container>
+
+          <!-- Presence Percentage Column -->
+          <ng-container matColumnDef="presencePercentage">
+            <th mat-header-cell *matHeaderCellDef>Presence %</th>
+            <td
+              mat-cell
+              *matCellDef="let report"
+              [class.high-presence]="report.presencePercentage >= 75"
+              [class.low-presence]="report.presencePercentage < 75"
+            >
+              {{ report.presencePercentage.toFixed(2) }}%
+            </td>
+          </ng-container>
+
+          <!-- Absence Percentage Column -->
+          <ng-container matColumnDef="absencePercentage">
+            <th mat-header-cell *matHeaderCellDef>Absence %</th>
+            <td
+              mat-cell
+              *matCellDef="let report"
+              [class.high-absence]="report.absencePercentage > 25"
+            >
+              {{ report.absencePercentage.toFixed(2) }}%
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <div class="export-actions">
+        <button mat-raised-button color="primary" (click)="exportReport()">
+          <mat-icon>download</mat-icon>
+          Export as CSV
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="!frequencyReport && reportForm.valid" class="empty-state">
+    <mat-card-content>
+      <mat-icon>insert_chart</mat-icon>
+      <p>Click "Generate Report" to view frequency data</p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,259 @@
+<div class="attendance-container">
+  <mat-card class="header-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>event_available</mat-icon>
+        Attendance Entry
+      </mat-card-title>
+      <mat-card-subtitle>
+        Record student attendance hours for the day
+      </mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="attendanceForm" class="attendance-form">
+        <!-- Class Selection and Date -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Class</mat-label>
+            <mat-select
+              formControlName="classId"
+              (selectionChange)="onClassChange($event.value)"
+            >
+              <mat-option *ngFor="let class of classes" [value]="class.id">
+                {{ class.name }} - {{ class.academicYear }} ({{
+                  class.semester
+                }})
+              </mat-option>
+            </mat-select>
+            <mat-hint>Choose the class for attendance entry</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date" />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-hint>Select the date for this attendance record</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Total Hours for Day</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="totalHours"
+              min="1"
+              max="24"
+              (input)="onTotalHoursChange($any($event.target).value)"
+            />
+            <mat-hint>Total scheduled hours for the day (e.g., 8)</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" *ngIf="students.length > 0">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="markAllPresent()"
+          >
+            <mat-icon>check_circle</mat-icon>
+            Mark All Present
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            type="button"
+            (click)="markAllAbsent()"
+          >
+            <mat-icon>cancel</mat-icon>
+            Mark All Absent
+          </button>
+        </div>
+
+        <!-- Student Attendance Table -->
+        <div
+          class="students-section"
+          *ngIf="students.length > 0"
+          formArrayName="students"
+        >
+          <h3>Student Attendance ({{ students.length }} students)</h3>
+
+          <div class="table-container">
+            <table
+              mat-table
+              [dataSource]="studentsArray.controls"
+              class="attendance-table"
+            >
+              <!-- Student Name Column -->
+              <ng-container matColumnDef="studentName">
+                <th mat-header-cell *matHeaderCellDef>Student Name</th>
+                <td
+                  mat-cell
+                  *matCellDef="let studentForm; let i = index"
+                  [formGroupName]="i"
+                >
+                  <strong>{{ studentForm.get("studentName")?.value }}</strong>
+                </td>
+              </ng-container>
+
+              <!-- Hours Present Column -->
+              <ng-container matColumnDef="hoursPresent">
+                <th mat-header-cell *matHeaderCellDef>Hours Present</th>
+                <td
+                  mat-cell
+                  *matCellDef="let studentForm; let i = index"
+                  [formGroupName]="i"
+                >
+                  <mat-form-field appearance="outline" class="table-field">
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="hoursPresent"
+                      min="0"
+                      [max]="attendanceForm.get('totalHours')?.value"
+                      step="0.5"
+                    />
+                  </mat-form-field>
+                  <div
+                    class="percentage-indicator"
+                    [class.good]="
+                      getStudentPresencePercentage(
+                        studentForm.get('hoursPresent')?.value
+                      ) >= 75
+                    "
+                    [class.warning]="
+                      getStudentPresencePercentage(
+                        studentForm.get('hoursPresent')?.value
+                      ) < 75
+                    "
+                  >
+                    {{
+                      getStudentPresencePercentage(
+                        studentForm.get("hoursPresent")?.value
+                      ).toFixed(0)
+                    }}%
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Hours Absent Column -->
+              <ng-container matColumnDef="hoursAbsent">
+                <th mat-header-cell *matHeaderCellDef>Hours Absent</th>
+                <td
+                  mat-cell
+                  *matCellDef="let studentForm; let i = index"
+                  [formGroupName]="i"
+                >
+                  <mat-form-field appearance="outline" class="table-field">
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="hoursAbsent"
+                      min="0"
+                      [max]="attendanceForm.get('totalHours')?.value"
+                      step="0.5"
+                      readonly
+                    />
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <!-- Notes Column -->
+              <ng-container matColumnDef="notes">
+                <th mat-header-cell *matHeaderCellDef>Notes</th>
+                <td
+                  mat-cell
+                  *matCellDef="let studentForm; let i = index"
+                  [formGroupName]="i"
+                >
+                  <mat-form-field
+                    appearance="outline"
+                    class="table-field notes-field"
+                  >
+                    <input
+                      matInput
+                      formControlName="notes"
+                      placeholder="Optional notes (e.g., sick, excused)"
+                    />
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+
+          <!-- Save Actions -->
+          <div class="save-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="button"
+              (click)="saveAttendance()"
+              [disabled]="attendanceForm.invalid"
+            >
+              <mat-icon>save</mat-icon>
+              Save Attendance
+            </button>
+            <button mat-raised-button type="button" (click)="resetForm()">
+              <mat-icon>clear</mat-icon>
+              Clear Form
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="students.length === 0 && selectedClass">
+          <mat-icon>info</mat-icon>
+          <p>No students found in this class. Please add students first.</p>
+        </div>
+
+        <div class="empty-state" *ngIf="!selectedClass">
+          <mat-icon>school</mat-icon>
+          <p>Select a class to begin recording attendance</p>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Info Card -->
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>info</mat-icon>
+        How to Use
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ol>
+        <li><strong>Select a class</strong> from the dropdown menu</li>
+        <li><strong>Choose the date</strong> for the attendance record</li>
+        <li>
+          <strong>Set total hours</strong> for the day (default is 8 hours)
+        </li>
+        <li>
+          <strong>Enter hours present</strong> for each student (hours absent
+          will auto-calculate)
+        </li>
+        <li><strong>Add optional notes</strong> for special circumstances</li>
+        <li><strong>Click Save</strong> to record the attendance</li>
+      </ol>
+      <p class="tip">
+        <mat-icon>lightbulb</mat-icon>
+        <strong>Tip:</strong> Use "Mark All Present" or "Mark All Absent"
+        buttons for quick entry, then adjust individual students as needed.
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

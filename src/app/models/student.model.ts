@@ -18,3 +18,37 @@ export interface StudentClass {
   createdAt: Date;
   isActive: boolean;
 }
+
+export interface AttendanceRecord {
+  id: string;
+  studentId: string;
+  classId: string;
+  date: Date;
+  hoursPresent: number;
+  hoursAbsent: number;
+  totalHours: number;
+  notes?: string;
+}
+
+export interface FrequencyReport {
+  classId: string;
+  className: string;
+  period: 'semester' | 'year';
+  academicYear: string;
+  semester?: string;
+  totalClassHours: number;
+  studentReports: StudentFrequencyReport[];
+  classAveragePresence: number;
+  classAverageAbsence: number;
+  generatedAt: Date;
+}
+
+export interface StudentFrequencyReport {
+  studentId: string;
+  studentName: string;
+  totalHoursPresent: number;
+  totalHoursAbsent: number;
+  totalHours: number;
+  presencePercentage: number;
+  absencePercentage: number;
+}
