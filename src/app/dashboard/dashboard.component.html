@@ -1,64 +1,87 @@
 <div class="dashboard-container">
-  <h1>Dashboard</h1>
-  <p>Welcome to the Student Frequency Calculator!</p>
+  <h1>Panel główny</h1>
+  <p>Witaj w Kalkulatorze Frekwencji Uczniów!</p>
 
   <div class="stats-grid">
     <mat-card class="stat-card">
       <mat-card-header>
-        <mat-card-title>Total Students</mat-card-title>
+        <mat-card-title>Wszyscy uczniowie</mat-card-title>
         <mat-icon mat-card-avatar>school</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        <div class="stat-number">0</div>
+        <div class="stat-number">{{ totalStudents }}</div>
+        <div class="stat-label">{{ activeStudents }} aktywnych</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card">
       <mat-card-header>
-        <mat-card-title>Today's Attendance</mat-card-title>
-        <mat-icon mat-card-avatar>event_available</mat-icon>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="stat-number">0%</div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="stat-card">
-      <mat-card-header>
-        <mat-card-title>Classes Today</mat-card-title>
+        <mat-card-title>Aktywne klasy</mat-card-title>
         <mat-icon mat-card-avatar>class</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        <div class="stat-number">0</div>
+        <div class="stat-number">{{ totalClasses }}</div>
+        <div class="stat-label">w tym semestrze</div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card">
       <mat-card-header>
-        <mat-card-title>Average Frequency</mat-card-title>
+        <mat-card-title>Dzisiejsza frekwencja</mat-card-title>
+        <mat-icon mat-card-avatar>event_available</mat-icon>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-number">-</div>
+        <div class="stat-label">Wkrótce</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-header>
+        <mat-card-title>Średnia frekwencja</mat-card-title>
         <mat-icon mat-card-avatar>assessment</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        <div class="stat-number">0%</div>
+        <div class="stat-number">-</div>
+        <div class="stat-label">Wkrótce</div>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div class="quick-actions">
-    <h2>Quick Actions</h2>
+    <h2>Szybkie akcje</h2>
     <div class="action-buttons">
       <button mat-raised-button color="primary" routerLink="/students">
         <mat-icon>add</mat-icon>
-        Add Students
+        Dodaj uczniów
       </button>
       <button mat-raised-button color="accent" routerLink="/attendance">
         <mat-icon>event_note</mat-icon>
-        Take Attendance
+        Sprawdź obecność
       </button>
       <button mat-raised-button routerLink="/reports">
         <mat-icon>bar_chart</mat-icon>
-        View Reports
+        Wyświetl raporty
       </button>
     </div>
+  </div>
+
+  <div class="developer-section" *ngIf="totalStudents === 0">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Pierwsze kroki</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Nie znaleziono danych. Możesz:</p>
+        <ul>
+          <li>Ręcznie dodać klasy i uczniów na stronie Uczniowie</li>
+          <li>Załadować przykładowe dane, aby szybko przetestować aplikację</li>
+        </ul>
+        <button mat-raised-button color="warn" (click)="seedSampleData()">
+          <mat-icon>download</mat-icon>
+          Załaduj przykładowe dane
+        </button>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
