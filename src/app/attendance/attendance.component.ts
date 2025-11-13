@@ -35,25 +35,24 @@ interface StudentAttendanceForm {
 }
 
 @Component({
-  selector: 'app-attendance',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatCheckboxModule,
-  ],
-  templateUrl: './attendance.component.html',
-  styleUrl: './attendance.component.css',
+    selector: 'app-attendance',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatCheckboxModule,
+    ],
+    templateUrl: './attendance.component.html',
+    styleUrl: './attendance.component.css'
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
   classes: StudentClass[] = [];

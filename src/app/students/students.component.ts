@@ -30,26 +30,25 @@ import { StudentService } from '../services/student.service';
 import { Student, StudentClass } from '../models/student.model';
 
 @Component({
-  selector: 'app-students',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatTableModule,
-    MatIconModule,
-    MatChipsModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatTabsModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './students.component.html',
-  styleUrl: './students.component.css',
+    selector: 'app-students',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatTableModule,
+        MatIconModule,
+        MatChipsModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatTabsModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './students.component.html',
+    styleUrl: './students.component.css'
 })
 export class StudentsComponent implements OnInit, OnDestroy {
   studentForm!: FormGroup;

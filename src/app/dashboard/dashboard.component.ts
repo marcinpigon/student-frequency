@@ -10,18 +10,17 @@ import { StudentService } from '../services/student.service';
 import { seedSampleData } from '../services/sample-data';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+    selector: 'app-dashboard',
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSnackBarModule,
+    ],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   totalStudents = 0;

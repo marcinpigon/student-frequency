@@ -25,23 +25,22 @@ import {
 } from '../models/student.model';
 
 @Component({
-  selector: 'app-frequency',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatTableModule,
-    MatIconModule,
-    MatInputModule,
-    MatRadioModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './frequency.component.html',
-  styleUrl: './frequency.component.css',
+    selector: 'app-frequency',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatTableModule,
+        MatIconModule,
+        MatInputModule,
+        MatRadioModule,
+        MatSnackBarModule,
+    ],
+    templateUrl: './frequency.component.html',
+    styleUrl: './frequency.component.css'
 })
 export class FrequencyComponent implements OnInit, OnDestroy {
   classes: StudentClass[] = [];
