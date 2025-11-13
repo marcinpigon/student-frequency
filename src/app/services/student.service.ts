@@ -294,18 +294,25 @@ export class StudentService {
     const students = this.getStudentsByClass(classId);
     const allAttendance = this.getAttendanceByClass(classId);
 
-    // Filter attendance by period
+    // Filter attendance by period and semester
     const filteredAttendance = allAttendance.filter((record) => {
-      if (period === 'semester' && semester) {
-        return classData.semester === semester;
+      // Match the period type
+      if (record.period !== period) {
+        return false;
       }
-      return true; // For 'year', include all records for the class
+
+      // If requesting semester report, match the specific semester
+      if (period === 'semester' && semester) {
+        return record.semester === semester;
+      }
+
+      // For year reports, include all year records
+      return true;
     });
 
-    // Calculate total class hours
+    // Calculate total class hours from the first record (they should all be the same for a given entry)
     const totalClassHours =
-      filteredAttendance.reduce((sum, record) => sum + record.totalHours, 0) /
-      (students.length || 1);
+      filteredAttendance.length > 0 ? filteredAttendance[0].totalHours : 0;
 
     // Generate student reports
     const studentReports: StudentFrequencyReport[] = students.map((student) => {

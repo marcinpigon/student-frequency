@@ -29,14 +29,14 @@ import {
 interface StudentAttendanceForm {
   studentId: string;
   studentName: string;
-  hoursPresent: number;
-  hoursAbsent: number;
+  totalHoursPresent: number;
+  totalHoursAbsent: number;
   notes: string;
 }
 
 @Component({
-    selector: 'app-attendance',
-    imports: [
+  selector: 'app-attendance',
+  imports: [
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -48,10 +48,10 @@ interface StudentAttendanceForm {
     MatNativeDateModule,
     MatSnackBarModule,
     MatTableModule,
-    MatCheckboxModule
-],
-    templateUrl: './attendance.component.html',
-    styleUrl: './attendance.component.css'
+    MatCheckboxModule,
+  ],
+  templateUrl: './attendance.component.html',
+  styleUrl: './attendance.component.css',
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
   classes: StudentClass[] = [];
@@ -71,10 +71,11 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     private studentService: StudentService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.initForm();
+  }
 
   ngOnInit(): void {
-    this.initForm();
     this.loadClasses();
   }
 
@@ -86,12 +87,23 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   private initForm(): void {
     this.attendanceForm = this.fb.group({
       classId: ['', Validators.required],
-      date: [new Date(), Validators.required],
-      totalHours: [
-        8,
-        [Validators.required, Validators.min(1), Validators.max(24)],
-      ],
+      period: ['semester', Validators.required],
+      semester: ['', Validators.required],
+      academicYear: ['', Validators.required],
+      totalClassHours: [0, [Validators.required, Validators.min(1)]],
       students: this.fb.array([]),
+    });
+
+    // Watch for period changes to toggle semester requirement
+    this.attendanceForm.get('period')?.valueChanges.subscribe((period) => {
+      const semesterControl = this.attendanceForm.get('semester');
+      if (period === 'semester') {
+        semesterControl?.setValidators([Validators.required]);
+      } else {
+        semesterControl?.clearValidators();
+        semesterControl?.setValue('');
+      }
+      semesterControl?.updateValueAndValidity();
     });
   }
 
@@ -111,6 +123,14 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.selectedClass = this.classes.find((c) => c.id === classId) || null;
     this.students = this.studentService.getStudentsByClass(classId);
 
+    // Pre-fill academic year and semester from class
+    if (this.selectedClass) {
+      this.attendanceForm.patchValue({
+        academicYear: this.selectedClass.academicYear,
+        semester: this.selectedClass.semester,
+      });
+    }
+
     // Clear existing student forms
     while (this.studentsArray.length) {
       this.studentsArray.removeAt(0);
@@ -121,65 +141,70 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       const studentForm = this.fb.group({
         studentId: [student.id],
         studentName: [`${student.firstName} ${student.lastName}`],
-        hoursPresent: [0, [Validators.required, Validators.min(0)]],
-        hoursAbsent: [0, [Validators.required, Validators.min(0)]],
+        totalHoursPresent: [0, [Validators.required, Validators.min(0)]],
+        totalHoursAbsent: [0, [Validators.required, Validators.min(0)]],
         notes: [''],
       });
 
       // Auto-calculate hours absent when hours present changes
-      studentForm.get('hoursPresent')?.valueChanges.subscribe((present) => {
-        const totalHours = this.attendanceForm.get('totalHours')?.value || 0;
-        const absent = Math.max(0, totalHours - (present ?? 0));
-        studentForm.get('hoursAbsent')?.setValue(absent, { emitEvent: false });
-      });
+      studentForm
+        .get('totalHoursPresent')
+        ?.valueChanges.subscribe((present) => {
+          const totalClassHours =
+            this.attendanceForm.get('totalClassHours')?.value || 0;
+          const absent = Math.max(0, totalClassHours - (present ?? 0));
+          studentForm
+            .get('totalHoursAbsent')
+            ?.setValue(absent, { emitEvent: false });
+        });
 
       this.studentsArray.push(studentForm);
     });
   }
-
-  onTotalHoursChange(totalHours: number): void {
-    // Update all student forms when total hours changes
+  onTotalClassHoursChange(totalHours: number): void {
+    // Update all student forms when total class hours changes
     this.studentsArray.controls.forEach((control) => {
-      const present = control.get('hoursPresent')?.value ?? 0;
+      const present = control.get('totalHoursPresent')?.value ?? 0;
       const absent = Math.max(0, totalHours - present);
-      control.get('hoursAbsent')?.setValue(absent, { emitEvent: false });
+      control.get('totalHoursAbsent')?.setValue(absent, { emitEvent: false });
     });
   }
 
   markAllPresent(): void {
-    const totalHours = this.attendanceForm.get('totalHours')?.value || 0;
+    const totalHours = this.attendanceForm.get('totalClassHours')?.value || 0;
     this.studentsArray.controls.forEach((control) => {
-      control.get('hoursPresent')?.setValue(totalHours);
-      control.get('hoursAbsent')?.setValue(0);
+      control.get('totalHoursPresent')?.setValue(totalHours);
+      control.get('totalHoursAbsent')?.setValue(0);
     });
-    this.snackBar.open('All students marked as present', 'Close', {
+    this.snackBar.open('Wszyscy uczniowie oznaczeni jako w pełni obecni', 'Zamknij', {
       duration: 2000,
     });
   }
 
-  markAllAbsent(): void {
-    const totalHours = this.attendanceForm.get('totalHours')?.value || 0;
+  clearAllHours(): void {
     this.studentsArray.controls.forEach((control) => {
-      control.get('hoursPresent')?.setValue(0);
-      control.get('hoursAbsent')?.setValue(totalHours);
+      control.get('totalHoursPresent')?.setValue(0);
+      control.get('totalHoursAbsent')?.setValue(0);
     });
-    this.snackBar.open('All students marked as absent', 'Close', {
+    this.snackBar.open('Wszystkie godziny wyczyszczone', 'Zamknij', {
       duration: 2000,
     });
   }
 
   saveAttendance(): void {
     if (this.attendanceForm.invalid) {
-      this.snackBar.open('Please fill in all required fields', 'Close', {
+      this.snackBar.open('Proszę wypełnić wszystkie wymagane pola', 'Zamknij', {
         duration: 3000,
       });
       return;
     }
 
     const formValue = this.attendanceForm.value;
-    const totalHours = formValue.totalHours;
-    const date = formValue.date;
+    const totalHours = formValue.totalClassHours;
     const classId = formValue.classId;
+    const period = formValue.period;
+    const semester = formValue.semester;
+    const academicYear = formValue.academicYear;
 
     let savedCount = 0;
 
@@ -188,9 +213,12 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       const record: Omit<AttendanceRecord, 'id'> = {
         studentId: studentData.studentId,
         classId: classId,
-        date: date,
-        hoursPresent: studentData.hoursPresent,
-        hoursAbsent: studentData.hoursAbsent,
+        date: new Date(),
+        period: period,
+        semester: semester,
+        academicYear: academicYear,
+        hoursPresent: studentData.totalHoursPresent,
+        hoursAbsent: studentData.totalHoursAbsent,
         totalHours: totalHours,
         notes: studentData.notes,
       };
@@ -199,22 +227,22 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       savedCount++;
     });
 
-    this.snackBar.open(`Attendance saved for ${savedCount} students`, 'Close', {
+    this.snackBar.open(`Frekwencja zapisana dla ${savedCount} uczniów`, 'Zamknij', {
       duration: 3000,
     });
 
-    // Reset hours but keep class and date
+    // Reset hours but keep class selection
     this.studentsArray.controls.forEach((control) => {
-      control.get('hoursPresent')?.setValue(0);
-      control.get('hoursAbsent')?.setValue(totalHours);
+      control.get('totalHoursPresent')?.setValue(0);
+      control.get('totalHoursAbsent')?.setValue(totalHours);
       control.get('notes')?.setValue('');
     });
   }
 
   resetForm(): void {
     this.attendanceForm.reset({
-      totalHours: 8,
-      date: new Date(),
+      period: 'semester',
+      totalClassHours: 0,
     });
     while (this.studentsArray.length) {
       this.studentsArray.removeAt(0);
@@ -224,7 +252,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   getStudentPresencePercentage(hoursPresent: number): number {
-    const totalHours = this.attendanceForm.get('totalHours')?.value || 1;
-    return (hoursPresent / totalHours) * 100;
+    const totalHours = this.attendanceForm.get('totalClassHours')?.value || 1;
+    return totalHours > 0 ? (hoursPresent / totalHours) * 100 : 0;
   }
 }

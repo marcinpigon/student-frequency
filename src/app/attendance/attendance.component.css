@@ -44,6 +44,11 @@
   min-width: 250px;
 }
 
+.third-width {
+  flex: 1;
+  min-width: 200px;
+}
+
 .quick-actions {
   display: flex;
   gap: 10px;

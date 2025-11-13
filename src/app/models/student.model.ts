@@ -24,6 +24,9 @@ export interface AttendanceRecord {
   studentId: string;
   classId: string;
   date: Date;
+  period: 'semester' | 'year';
+  semester?: string;
+  academicYear: string;
   hoursPresent: number;
   hoursAbsent: number;
   totalHours: number;

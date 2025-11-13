@@ -25,8 +25,8 @@ import {
 } from '../models/student.model';
 
 @Component({
-    selector: 'app-frequency',
-    imports: [
+  selector: 'app-frequency',
+  imports: [
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -36,10 +36,10 @@ import {
     MatIconModule,
     MatInputModule,
     MatRadioModule,
-    MatSnackBarModule
-],
-    templateUrl: './frequency.component.html',
-    styleUrl: './frequency.component.css'
+    MatSnackBarModule,
+  ],
+  templateUrl: './frequency.component.html',
+  styleUrl: './frequency.component.css',
 })
 export class FrequencyComponent implements OnInit, OnDestroy {
   classes: StudentClass[] = [];
@@ -61,10 +61,11 @@ export class FrequencyComponent implements OnInit, OnDestroy {
     private studentService: StudentService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.initForm();
+  }
 
   ngOnInit(): void {
-    this.initForm();
     this.loadClasses();
   }
 
@@ -77,7 +78,7 @@ export class FrequencyComponent implements OnInit, OnDestroy {
     this.reportForm = this.fb.group({
       classId: ['', Validators.required],
       period: ['semester', Validators.required],
-      semester: [''],
+      semester: ['', Validators.required],
     });
 
     // Watch for period changes to toggle semester requirement
@@ -87,8 +88,16 @@ export class FrequencyComponent implements OnInit, OnDestroy {
         semesterControl?.setValidators([Validators.required]);
       } else {
         semesterControl?.clearValidators();
+        semesterControl?.setValue('');
       }
       semesterControl?.updateValueAndValidity();
+    });
+
+    // Watch for class changes
+    this.reportForm.get('classId')?.valueChanges.subscribe((classId) => {
+      if (classId) {
+        this.onClassChange(classId);
+      }
     });
   }
 
@@ -107,7 +116,7 @@ export class FrequencyComponent implements OnInit, OnDestroy {
 
   generateReport(): void {
     if (this.reportForm.invalid) {
-      this.snackBar.open('Please fill in all required fields', 'Close', {
+      this.snackBar.open('Proszę wypełnić wszystkie wymagane pola', 'Zamknij', {
         duration: 3000,
       });
       return;
@@ -122,11 +131,11 @@ export class FrequencyComponent implements OnInit, OnDestroy {
 
     if (report) {
       this.frequencyReport = report;
-      this.snackBar.open('Report generated successfully', 'Close', {
+      this.snackBar.open('Raport wygenerowany pomyślnie', 'Zamknij', {
         duration: 3000,
       });
     } else {
-      this.snackBar.open('Failed to generate report', 'Close', {
+      this.snackBar.open('Nie udało się wygenerować raportu', 'Zamknij', {
         duration: 3000,
       });
     }
@@ -134,7 +143,7 @@ export class FrequencyComponent implements OnInit, OnDestroy {
 
   addSampleAttendance(): void {
     if (!this.selectedClass) {
-      this.snackBar.open('Please select a class first', 'Close', {
+      this.snackBar.open('Proszę najpierw wybrać klasę', 'Zamknij', {
         duration: 3000,
       });
       return;
@@ -145,37 +154,41 @@ export class FrequencyComponent implements OnInit, OnDestroy {
     );
 
     if (students.length === 0) {
-      this.snackBar.open('No students found in this class', 'Close', {
+      this.snackBar.open('Brak uczniów w tej klasie', 'Zamknij', {
         duration: 3000,
       });
       return;
     }
 
+    const formValue = this.reportForm.value;
+    const period = formValue.period || 'semester';
+    const semester = formValue.semester;
+
     // Generate sample attendance records for each student
     students.forEach((student) => {
-      // Add 10 random attendance records per student
-      for (let i = 0; i < 10; i++) {
-        const totalHours = 8; // 8 hours per day
-        const hoursPresent = Math.floor(Math.random() * 9); // 0-8 hours present
-        const hoursAbsent = totalHours - hoursPresent;
+      const totalHours = 120; // Total hours for the period
+      const hoursPresent = Math.floor(Math.random() * (totalHours + 1)); // 0 to totalHours
+      const hoursAbsent = totalHours - hoursPresent;
 
-        const record: Omit<AttendanceRecord, 'id'> = {
-          studentId: student.id,
-          classId: this.selectedClass!.id,
-          date: new Date(2024, 8 + Math.floor(i / 5), 1 + (i % 5) * 3), // Spread across Sept-Nov
-          hoursPresent,
-          hoursAbsent,
-          totalHours,
-          notes: `Sample attendance record ${i + 1}`,
-        };
+      const record: Omit<AttendanceRecord, 'id'> = {
+        studentId: student.id,
+        classId: this.selectedClass!.id,
+        date: new Date(),
+        period: period,
+        semester: period === 'semester' ? semester : undefined,
+        academicYear: this.selectedClass!.academicYear,
+        hoursPresent,
+        hoursAbsent,
+        totalHours,
+        notes: `Przykładowe dane frekwencji ${period === 'semester' ? 'semestralne' : 'roczne'}`,
+      };
 
-        this.studentService.addAttendanceRecord(record);
-      }
+      this.studentService.addAttendanceRecord(record);
     });
 
     this.snackBar.open(
-      `Added sample attendance for ${students.length} students`,
-      'Close',
+      `Dodano przykładową frekwencję dla ${students.length} uczniów`,
+      'Zamknij',
       { duration: 3000 }
     );
   }

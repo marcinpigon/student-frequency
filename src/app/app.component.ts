@@ -9,8 +9,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-    selector: 'app-root',
-    imports: [
+  selector: 'app-root',
+  imports: [
     RouterOutlet,
     RouterModule,
     MatSidenavModule,
@@ -18,10 +18,10 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatButtonModule,
     MatListModule,
-    MatDividerModule
-],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css'
+    MatDividerModule,
+  ],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   title = 'Student Frequency Calculator';
@@ -32,9 +32,12 @@ export class AppComponent implements OnInit {
   menuItems = [
     { icon: 'dashboard', label: 'Panel główny', route: '/dashboard' },
     { icon: 'school', label: 'Uczniowie', route: '/students' },
-    { icon: 'event_available', label: 'Frekwencja', route: '/attendance' },
-    { icon: 'bar_chart', label: 'Raport Częstotliwości', route: '/frequency' },
-    { icon: 'assessment', label: 'Raporty', route: '/reports' },
+    {
+      icon: 'event_available',
+      label: 'Wprowadź Frekwencję',
+      route: '/attendance',
+    },
+    { icon: 'assessment', label: 'Raporty Frekwencji', route: '/frequency' },
     { icon: 'settings', label: 'Ustawienia', route: '/settings' },
   ];
 

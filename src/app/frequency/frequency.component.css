@@ -35,16 +35,21 @@
   width: 100%;
 }
 
-.period-radio {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.period-selector {
   margin: 10px 0;
 }
 
-.period-radio mat-label {
+.period-label {
+  display: block;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+}
+
+.period-radio {
+  display: flex;
+  gap: 20px;
 }
 
 .period-radio mat-radio-button {
