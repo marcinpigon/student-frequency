@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:student-frequency": "node dist/student-frequency/server/server.mjs"
+    "serve:ssr:student-frequency": "node dist/student-frequency/server/server.mjs",
+    "deploy": "ng build --configuration production --base-href /student-frequency/ && npx angular-cli-ghpages --dir=dist/student-frequency/browser"
   },
   "private": true,
   "dependencies": {

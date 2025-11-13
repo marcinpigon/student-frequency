@@ -180,7 +180,9 @@ export class FrequencyComponent implements OnInit, OnDestroy {
         hoursPresent,
         hoursAbsent,
         totalHours,
-        notes: `Przykładowe dane frekwencji ${period === 'semester' ? 'semestralne' : 'roczne'}`,
+        notes: `Przykładowe dane frekwencji ${
+          period === 'semester' ? 'semestralne' : 'roczne'
+        }`,
       };
 
       this.studentService.addAttendanceRecord(record);

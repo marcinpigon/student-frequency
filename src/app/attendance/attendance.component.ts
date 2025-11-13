@@ -176,9 +176,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       control.get('totalHoursPresent')?.setValue(totalHours);
       control.get('totalHoursAbsent')?.setValue(0);
     });
-    this.snackBar.open('Wszyscy uczniowie oznaczeni jako w pełni obecni', 'Zamknij', {
-      duration: 2000,
-    });
+    this.snackBar.open(
+      'Wszyscy uczniowie oznaczeni jako w pełni obecni',
+      'Zamknij',
+      {
+        duration: 2000,
+      }
+    );
   }
 
   clearAllHours(): void {
@@ -227,9 +231,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       savedCount++;
     });
 
-    this.snackBar.open(`Frekwencja zapisana dla ${savedCount} uczniów`, 'Zamknij', {
-      duration: 3000,
-    });
+    this.snackBar.open(
+      `Frekwencja zapisana dla ${savedCount} uczniów`,
+      'Zamknij',
+      {
+        duration: 3000,
+      }
+    );
 
     // Reset hours but keep class selection
     this.studentsArray.controls.forEach((control) => {

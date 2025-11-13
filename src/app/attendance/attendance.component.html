@@ -6,7 +6,8 @@
         Wprowadzanie Frekwencji Semestralnej/Rocznej
       </mat-card-title>
       <mat-card-subtitle>
-        Wprowadź całkowitą liczbę godzin frekwencji dla semestru lub całego roku akademickiego
+        Wprowadź całkowitą liczbę godzin frekwencji dla semestru lub całego roku
+        akademickiego
       </mat-card-subtitle>
     </mat-card-header>
   </mat-card>
@@ -26,7 +27,11 @@
               @for (class of classes; track class) {
               <mat-option [value]="class.id">
                 {{ class.name }} - {{ class.academicYear }} ({{
-                  class.semester === "Winter" ? "Zimowy" : class.semester === "Summer" ? "Letni" : class.semester
+                  class.semester === "Winter"
+                    ? "Zimowy"
+                    : class.semester === "Summer"
+                    ? "Letni"
+                    : class.semester
                 }})
               </mat-option>
               }
@@ -74,7 +79,9 @@
               min="1"
               (input)="onTotalClassHoursChange($any($event.target).value)"
             />
-            <mat-hint>Całkowita liczba zaplanowanych godzin w całym okresie</mat-hint>
+            <mat-hint
+              >Całkowita liczba zaplanowanych godzin w całym okresie</mat-hint
+            >
           </mat-form-field>
         </div>
         }
@@ -141,7 +148,9 @@
               </ng-container>
               <!-- Hours Absent Column -->
               <ng-container matColumnDef="hoursAbsent">
-                <th mat-header-cell *matHeaderCellDef>Suma Godzin Nieobecności</th>
+                <th mat-header-cell *matHeaderCellDef>
+                  Suma Godzin Nieobecności
+                </th>
                 <td
                   mat-cell
                   *matCellDef="let studentForm; let i = index"
