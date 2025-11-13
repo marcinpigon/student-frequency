@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   FormBuilder,
   FormGroup,
@@ -27,18 +27,17 @@ import {
 @Component({
     selector: 'app-frequency',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatTableModule,
-        MatIconModule,
-        MatInputModule,
-        MatRadioModule,
-        MatSnackBarModule,
-    ],
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTableModule,
+    MatIconModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSnackBarModule
+],
     templateUrl: './frequency.component.html',
     styleUrl: './frequency.component.css'
 })

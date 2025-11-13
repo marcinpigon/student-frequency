@@ -5,7 +5,7 @@
     [mode]="isMobile ? 'over' : 'side'"
     [opened]="!isMobile"
     class="app-sidenav"
-  >
+    >
     <!-- App Logo/Title -->
     <div class="sidenav-header">
       <mat-icon class="app-icon">school</mat-icon>
@@ -16,16 +16,17 @@
 
     <!-- Navigation Menu -->
     <nav class="nav-menu">
-      <a
-        *ngFor="let item of menuItems"
-        [routerLink]="item.route"
-        routerLinkActive="active"
-        class="nav-link"
-        (click)="onMenuItemClick()"
-      >
-        <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
-        <span class="nav-label">{{ item.label }}</span>
-      </a>
+      @for (item of menuItems; track item) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          class="nav-link"
+          (click)="onMenuItemClick()"
+          >
+          <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
     </nav>
 
     <!-- Footer -->

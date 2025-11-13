@@ -66,22 +66,24 @@
     </div>
   </div>
 
-  <div class="developer-section" *ngIf="totalStudents === 0">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Pierwsze kroki</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>Nie znaleziono danych. Możesz:</p>
-        <ul>
-          <li>Ręcznie dodać klasy i uczniów na stronie Uczniowie</li>
-          <li>Załadować przykładowe dane, aby szybko przetestować aplikację</li>
-        </ul>
-        <button mat-raised-button color="warn" (click)="seedSampleData()">
-          <mat-icon>download</mat-icon>
-          Załaduj przykładowe dane
-        </button>
-      </mat-card-content>
-    </mat-card>
-  </div>
+  @if (totalStudents === 0) {
+    <div class="developer-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Pierwsze kroki</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Nie znaleziono danych. Możesz:</p>
+          <ul>
+            <li>Ręcznie dodać klasy i uczniów na stronie Uczniowie</li>
+            <li>Załadować przykładowe dane, aby szybko przetestować aplikację</li>
+          </ul>
+          <button mat-raised-button color="warn" (click)="seedSampleData()">
+            <mat-icon>download</mat-icon>
+            Załaduj przykładowe dane
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 </div>

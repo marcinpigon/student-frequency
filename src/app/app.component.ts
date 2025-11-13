@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,16 +11,15 @@ import { MatDividerModule } from '@angular/material/divider';
 @Component({
     selector: 'app-root',
     imports: [
-        CommonModule,
-        RouterOutlet,
-        RouterModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatListModule,
-        MatDividerModule,
-    ],
+    RouterOutlet,
+    RouterModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatDividerModule
+],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })

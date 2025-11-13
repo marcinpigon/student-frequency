@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   FormBuilder,
   FormGroup,
@@ -37,20 +37,19 @@ interface StudentAttendanceForm {
 @Component({
     selector: 'app-attendance',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatCheckboxModule,
-    ],
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatCheckboxModule
+],
     templateUrl: './attendance.component.html',
     styleUrl: './attendance.component.css'
 })

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,13 +12,12 @@ import { seedSampleData } from '../services/sample-data';
 @Component({
     selector: 'app-dashboard',
     imports: [
-        CommonModule,
-        RouterModule,
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        MatSnackBarModule,
-    ],
+    RouterModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSnackBarModule
+],
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.css'
 })
